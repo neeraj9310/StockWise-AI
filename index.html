@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TCS Signal Check</title>
+  <meta name="description" content="Classify TCS stock-market features as Buy, Hold or Sell with your trained model." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="32" height="32">
+            <rect width="32" height="32" rx="8" fill="currentColor"/>
+            <path d="M6 22l6-7 5 4 9-11" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <div>
+          <h1 class="brand__title">TCS signal check</h1>
+          <p class="brand__sub">Enter today’s market features and get a Buy, Hold or Sell classification.</p>
+        </div>
+      </div>
+
+      <button type="button" id="apiStatus" class="status" data-state="checking" title="Click to re-check the API">
+        <span class="status__dot" aria-hidden="true"></span>
+        <span id="apiStatusText">Checking API…</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- ============ FORM ============ -->
+    <section class="panel" aria-labelledby="formTitle">
+      <div class="panel__head">
+        <div>
+          <h2 id="formTitle">Market features</h2>
+          <p class="muted">All 28 fields are required. Numbers only, decimals allowed.</p>
+        </div>
+        <div class="panel__actions">
+          <button type="button" id="sampleBtn" class="btn btn--ghost">Fill sample data</button>
+          <button type="button" id="resetBtn" class="btn btn--ghost">Clear</button>
+        </div>
+      </div>
+
+      <div id="formAlert" class="alert" role="alert" hidden></div>
+
+      <form id="predictForm" novalidate>
+        <!-- Field groups are rendered by script.js -->
+        <div id="formFields"></div>
+
+        <div class="form-footer">
+          <button type="submit" id="submitBtn" class="btn btn--primary">
+            <span class="btn__spinner" aria-hidden="true"></span>
+            <span id="submitLabel">Get prediction</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ RESULT ============ -->
+    <aside class="result-col" aria-live="polite">
+      <div class="result" id="resultCard" data-state="idle">
+
+        <!-- Idle -->
+        <div class="result__state" data-for="idle">
+          <svg class="result__art" viewBox="0 0 120 70" aria-hidden="true">
+            <path d="M4 56l22-20 18 12 26-32 20 16 26-24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 66h112" stroke="currentColor" stroke-opacity=".25" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <h2>No prediction yet</h2>
+          <p class="muted">Fill in the features, or load the sample data to try it out. Your result will appear here.</p>
+        </div>
+
+        <!-- Loading -->
+        <div class="result__state" data-for="loading">
+          <div class="loader" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <h2>Analysing features…</h2>
+          <p class="muted">Waiting for the model to respond.</p>
+        </div>
+
+        <!-- Success -->
+        <div class="result__state" data-for="success">
+          <p class="result__label">Model classification</p>
+          <p class="verdict" id="verdict">—</p>
+          <p class="verdict__text" id="verdictText"></p>
+
+          <div class="probs" id="probsWrap" hidden>
+            <h3>Confidence by class</h3>
+            <ul id="probsList" class="probs__list"></ul>
+          </div>
+
+          <dl class="meta">
+            <div><dt>Model</dt><dd id="metaModel">—</dd></div>
+            <div><dt>Features used</dt><dd id="metaFeatures">—</dd></div>
+          </dl>
+
+          <p class="disclaimer" id="metaNote"></p>
+        </div>
+
+        <!-- Error -->
+        <div class="result__state" data-for="error">
+          <div class="result__icon" aria-hidden="true">!</div>
+          <h2 id="errorTitle">Something went wrong</h2>
+          <p class="muted" id="errorText"></p>
+          <button type="button" id="retryBtn" class="btn btn--ghost">Try again</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <p>Predictions come from a machine-learning classifier and are not financial advice.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
